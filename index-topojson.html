@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>Canadian Province TopoJSON</title>
+<style>
+
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: .25px;
+  stroke-linejoin: round;
+}
+</style>
+</head>
+<body> 
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//d3js.org/topojson.v2.min.js"></script>
+<script>
+var width = 900,
+    height = 500;
+
+// http://www.statcan.gc.ca/pub/92-195-x/2011001/other-autre/mapproj-projcarte/m-c-eng.htm
+var projection = d3.geo.conicConformal()
+    .rotate([91, 0])
+    .center([0, 63])
+    .parallels([49, 77])
+    .scale(650)
+    .translate([width / 2, height / 2])
+    .precision(.1);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("canadaprovjson/canadaprovtopo.json", function(error, canada) {
+    if (error) throw error;
+
+    var transform = canada.transform,
+        scalex = transform.scale[0],
+        scaley = transform.scale[1],
+        transx = transform.translate[0],
+        transy = transform.translate[1];
+
+    svg.append("path")
+        .datum(topojson.mesh(canada))
+        .attr("d", path);
+
+    svg.selectAll("circle")
+        .data(canada.arcs)
+        .enter().append("circle")
+        .attr("transform", function(d) {
+            return "translate(" + projection([d[0][0] * scalex + transx, d[0][1] * scaley + transy]) + ")"; })
+        .attr("r", 1.5);
+});
+</script>
+</body>
+</html>
