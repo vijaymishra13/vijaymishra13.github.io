@@ -3,29 +3,13 @@
 <script src="syslogTimeline.js"></script>
 <script src="//d3js.org/topojson.v2.min.js"></script>
 <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
-<style>
-    circle {
-        fill: lightcoral;
-        stroke: black;
-    };
-
-    .svg {
-        background-color: green;
-    }
-
-    path {
-        fill: none;
-        stroke: #000;
-        stroke-width: .25px;
-        stroke-linejoin: round;
-    }
-</style>
+<link href="index.css" rel="stylesheet" type="text/css">
 <!-- <body onload='init()'> -->
 <svg width=400 height=300>
 </svg>
 <script type="module">
     import { plotSyslog } from './syslogTimeline.js';
-    import { plotHeatMap } from './heatMapWithAlert.js';
+    import { plotHeatMap } from './heat-map.js';
     async function init() {
         plotHeatMap();
     }

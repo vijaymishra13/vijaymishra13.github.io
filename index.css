@@ -1,0 +1,15 @@
+circle {
+    fill: lightcoral;
+    stroke: black;
+};
+
+.svg {
+    background-color: green;
+}
+
+path {
+    fill: none;
+    stroke: #000;
+    stroke-width: .25px;
+    stroke-linejoin: round;
+}
