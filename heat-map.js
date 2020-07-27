@@ -9,7 +9,13 @@ function createMap() {
     var width = 1200,
         height = 800;
 
+    var time_of_view = Date.parse("2020-07-20T09:05:00Z");    
+    var time_window = 120;
     // http://www.statcan.gc.ca/pub/92-195-x/2011001/other-autre/mapproj-projcarte/m-c-eng.htm
+
+    var linkColor = d3.scaleLinear().domain([100,0])
+                .range(["green", "red"])
+
 
     var groupElement = d3.select("body").append("g")
         .attr("width", width)
@@ -36,7 +42,12 @@ function createMap() {
         d3.csv("./devices.csv"),
         d3.csv("./links.csv"),
     ]).then(
-        ([canada, faultCsv, officeCsv, devicesCsv, linksCsv]) => {
+        ([canada, faultCsvIn, officeCsv, devicesCsvIn, linksCsvIn]) => {
+
+            // Filter records for duration we are interested in
+            var faultCsv = filter_by_time(faultCsvIn, time_of_view, time_window);
+            var devicesCsv = filter_by_time(devicesCsvIn, time_of_view, time_window);
+            var linksCsv = filter_by_time(linksCsvIn, time_of_view, time_window);
             console.log("canadadata - " + canada);
             console.log("faultCsv - " + faultCsv);
             console.log("officeCsv - " + officeCsv);
@@ -68,16 +79,6 @@ function createMap() {
                 })
                 .attr("r", 0.25);
 
-            var faultCount = {};
-            faultCsv.forEach(d => {
-                if (faultCount[d.location]) {
-                    faultCount[d.location] = faultCount[d.location] + 1;
-                }
-                else {
-                    faultCount[d.location] = 1;
-                }
-            })
-
             var devices = {};
             devicesCsv.forEach(d => {
                 var device = {
@@ -86,7 +87,21 @@ function createMap() {
                     healthscore: d.healthscore
                 }
                 devices[d.name] = device;
-            })
+            });
+
+            var faultCount = {};
+            faultCsv.forEach(d => {
+                console.log("source - " + d.source);
+                var device = devices[d.source];
+                if (faultCount[device.location]) {
+                    faultCount[device.location] = faultCount[device.location] + 1;
+                }
+                else {
+                    faultCount[device.location] = 1;
+                }
+            });
+
+
 
             var offices = {};
             officeCsv.forEach(d => {
@@ -103,7 +118,7 @@ function createMap() {
             // Add all offices on the map. If no faults, show them as green. If fauls present, show them as
             // amber with size of circle based on number of faults.
             // TODO - eventually, need to limit size of circle
-            svg.selectAll("office")
+            const officeLegend = svg.selectAll("office")
                 .data(officeCsv)
                 .enter()
                 .append("circle")
@@ -131,6 +146,12 @@ function createMap() {
                         return "green";
                     }
                 });
+
+            officeLegend.append("path")
+                .attr("fill", "red")
+                .attr("fill-opacity", 0.3)
+                .attr("stroke", "red")
+                .attr("d", d => spike(100));   
 
             // Add constant label for offices    
             svg.selectAll("text")
@@ -182,10 +203,12 @@ function createMap() {
                     return coords[1];
                 })
                 .attr("stroke-width", 2)
-                .attr("stroke", "black")
+                .attr("stroke", function(d){
+                    return linkColor(d.healthscore);
+                })
                 .style("stroke-dasharray", ("3, 3")) 
                 .append("title")
-                    .text(function(d) { d.link_name;});  
+                    .text(function(d) { return d.link_name;});  
         }
     )
 
@@ -247,4 +270,23 @@ function createForcedGraphOfDevices(officeCsv, office) {
 
         }
     )
+}
+
+function spike(length, width = 7) {
+    var result = `M${-width / 2},0L0,${-length}L${width / 2},0` ;
+    console.log("spike output - " + result);
+    return result;
+};
+
+function filter_by_time(csvRecords, time, duration){
+
+    return csvRecords.filter(function(el){
+        var obs_time = Date.parse(el.time); 
+        console.log("comparing - " + time + " and " + obs_time);  
+        if( obs_time <= time && obs_time > (time - (duration*1000))){
+        // if( obs_time <= time ){
+            console.log("element - " + JSON.stringify(el));
+            return el;
+        }
+    })
 }
