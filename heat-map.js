@@ -1,21 +1,24 @@
 
-export function plotHeatMap() {
-    createMap();
+
+export function plotHeatMap(time_of_view) {
+    createMap(time_of_view);
 };
+window.plotHeatMap = plotHeatMap;
 
-
-function createMap() {
+function createMap(time_of_view_str) {
     console.log("Creating a Heat map - 11!");
     var width = 1200,
         height = 800;
 
-    var time_of_view = Date.parse("2020-07-20T09:05:00Z");    
+    // var time_of_view = Date.parse("2020-07-20T09:05:00Z");    
+    var time_of_view = Date.parse(time_of_view_str);  
     var time_window = 120;
     // http://www.statcan.gc.ca/pub/92-195-x/2011001/other-autre/mapproj-projcarte/m-c-eng.htm
 
     var linkColor = d3.scaleLinear().domain([100,0])
                 .range(["green", "red"])
 
+    var existing = d3.select("body").select("g").remove();
 
     var groupElement = d3.select("body").append("g")
         .attr("width", width)

@@ -1,19 +1,32 @@
 <html>
-<script src="//d3js.org/d3.v5.min.js" charset="utf-8"></script>
-<script src="//d3js.org/topojson.v2.min.js"></script>
-<script src="https://d3js.org/d3-zoom.v1.min.js"></script>
-<link href="index.css" rel="stylesheet" type="text/css">
-<!-- <body onload='init()'> -->
-<svg width=400 height=300>
-</svg>
-<script type="module">
-    import { plotSyslog } from './syslogTimeline.js';
-    import { plotHeatMap } from './heat-map.js';
-    async function init() {
-        plotHeatMap();
-    }
-    window.onload = init;
-</script>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="//d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script src="//d3js.org/topojson.v2.min.js"></script>
+    <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
+    <link href="index.css" rel="stylesheet" type="text/css">
+    <script type="module" src="./index.js"></script>
+    <!-- <body onload='init()'> -->
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Network Views through Link Outages</h2>
+        <ul class="nav nav-tabs">
+          <li class="active" onclick="plotHeatMap('2020-07-20T09:00:00Z')"><a data-toggle="tab" href="#home">Before Outage (9:00 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:02:00Z')">Devices starts alarming (9:02 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:04:00Z')">Link is in outage (9:04 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:06:00Z')">Outage resolved. (9:06 AM)</a></li>
+          <li><a data-toggle="tab" href="#menu3">Explore</a></li>
+        </ul>
+      </div>
+ 
 </body>
+
 
 </html>
