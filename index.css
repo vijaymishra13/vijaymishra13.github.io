@@ -4,12 +4,31 @@ circle {
 };
 
 .svg {
-    background-color: green;
+    background-color: grey;
 }
-
+.header{
+    text-align: center;
+    font-size: 20px;
+}
 path {
     fill: none;
     stroke: #000;
     stroke-width: .25px;
     stroke-linejoin: round;
+}
+.chart {
+    border-color: grey;
+    border-style: solid;
+    width: 80%;
+    margin-left: 10%;
+    align-self: center;
+}
+
+.timeline {
+    border-color: grey;
+    border-style: solid;
+    width: 80%;
+    align-self: center;
+    height: "100px";
+    margin-left: 10%;
 }

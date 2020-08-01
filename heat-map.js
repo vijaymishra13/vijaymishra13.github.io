@@ -7,7 +7,7 @@ window.plotHeatMap = plotHeatMap;
 
 function createMap(time_of_view_str) {
     console.log("Creating a Heat map - 11!");
-    var width = 1200,
+    var width = chart_width,
         height = 800;
 
     // var time_of_view = Date.parse("2020-07-20T09:05:00Z");    
@@ -18,21 +18,21 @@ function createMap(time_of_view_str) {
     var linkColor = d3.scaleLinear().domain([100,0])
                 .range(["green", "red"])
 
-    var existing = d3.select("body").select("g").remove();
 
-    var groupElement = d3.select("body").append("g")
+    d3.select(".chart").select("svg").remove();            
+
+    // width = +groupElement.attr("width");
+    // height = +groupElement.attr("height");
+
+    const svg = d3.select(".chart").append("svg")
         .attr("width", width)
         .attr("height", height);
 
-    width = +groupElement.attr("width");
-    height = +groupElement.attr("height");
-
-    var svg = groupElement.append("svg")
-        .attr("width", width)
-        .attr("height", height);
+    const g = svg.append("g");
 
     svg.call(d3.zoom().scaleExtent([1, 2]).on('zoom', () => {
-        svg.attr('transform', d3.event.transform);
+        g
+        .attr('transform', d3.event.transform);
     }))
     console.log("d3.json - " + d3.json);
 
@@ -69,11 +69,11 @@ function createMap(time_of_view_str) {
             var path = d3.geoPath(projection);
             var transform = topojson.transform(canada);
 
-            svg.append("path")
+            g.append("path")
                 .datum(topojson.mesh(canada))
                 .attr("d", path);
 
-            svg.selectAll("circle")
+            g.selectAll("circle")
                 .data(canada.arcs)
                 .enter().append("circle")
                 .attr("transform", function (d) {
@@ -121,7 +121,7 @@ function createMap(time_of_view_str) {
             // Add all offices on the map. If no faults, show them as green. If fauls present, show them as
             // amber with size of circle based on number of faults.
             // TODO - eventually, need to limit size of circle
-            const officeLegend = svg.selectAll("office")
+            const officeLegend = g.selectAll("office")
                 .data(officeCsv)
                 .enter()
                 .append("circle")
@@ -157,7 +157,7 @@ function createMap(time_of_view_str) {
                 .attr("d", d => spike(100));   
 
             // Add constant label for offices    
-            svg.selectAll("text")
+            g.selectAll("text")
                 .data(officeCsv)
                 .enter()
                 .append("text")
@@ -176,7 +176,7 @@ function createMap(time_of_view_str) {
 
             
                 
-            svg.selectAll("line")
+            g.selectAll("line")
                 .data(linksCsv)
                 .enter()
                 .append("line")
@@ -293,3 +293,9 @@ function filter_by_time(csvRecords, time, duration){
         }
     })
 }
+
+function zoomed() {
+    g
+      .selectAll('path') // To prevent stroke width from scaling
+      .attr('transform', d3.event.transform);
+  }
