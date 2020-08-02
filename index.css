@@ -24,6 +24,14 @@ path {
     align-self: center;
 }
 
+.intro {
+    border-color: grey;
+    border-style: solid;
+    width: 80%;
+    margin-left: 10%;
+    align-self: center;
+}
+
 .timeline {
     border-color: grey;
     border-style: solid;
@@ -31,4 +39,8 @@ path {
     align-self: center;
     height: "100px";
     margin-left: 10%;
+}
+
+.time_slider {
+    cursor: crosshair;
 }

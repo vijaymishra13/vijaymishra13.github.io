@@ -1,11 +1,68 @@
 
 
 export function plotHeatMap(time_of_view) {
-    createMap(time_of_view);
+    if (mapSvg == undefined){
+        console.log("Map is not present. Creating map for first time");
+        createMap(time_of_view);
+    }
+    plotDataPoints(time_of_view)
 };
 window.plotHeatMap = plotHeatMap;
+var chartScale = 1.5;
+var mapSvg = undefined;
+var mapGrp = undefined;
+var projection = undefined;
 
-function createMap(time_of_view_str) {
+function createMap() {
+    console.log("Creating a Heat map - 11!");
+    var width = chart_width,
+        height = 800;
+
+    d3.select(".chart").select("svg").remove();            
+
+    // width = +groupElement.attr("width");
+    // height = +groupElement.attr("height");
+
+    mapSvg = d3.select(".chart").append("svg")
+        .attr("width", "100%")
+        .attr("height", height);
+
+    mapGrp = mapSvg.append("g");
+
+    mapSvg.call(d3.zoom().scaleExtent([1, 3]).on('zoom', () => {
+        mapGrp
+        .attr('transform', d3.event.transform);
+    })
+    )
+    console.log("d3.json - " + d3.json);
+    Promise.all([
+        d3.json("./canadaprovjson/canadaprovtopo.json")
+    ]).then(
+        ([canada]) => {
+            console.log("canadadata - " + canada);
+
+            // 1.0 - Setup the maps
+            projection = d3.geoConicConformal()
+                .rotate([91, 0])
+                .center([0, 63])
+                .parallels([49, 77])
+                .scale(1000)
+                .translate([width / 2, height / 2])
+                .precision(.1);
+
+            var path = d3.geoPath(projection);
+            var transform = topojson.transform(canada);
+
+            mapGrp.append("path")
+                .datum(topojson.mesh(canada))
+                .attr("d", path);
+        }
+    )
+    return mapSvg.node();
+};
+
+
+function plotDataPoints(time_of_view_str) {
     console.log("Creating a Heat map - 11!");
     var width = chart_width,
         height = 800;
@@ -19,68 +76,44 @@ function createMap(time_of_view_str) {
                 .range(["green", "red"])
 
 
-    d3.select(".chart").select("svg").remove();            
+    d3.select(".data-points").remove();            
 
-    // width = +groupElement.attr("width");
-    // height = +groupElement.attr("height");
+    // // width = +groupElement.attr("width");
+    // // height = +groupElement.attr("height");
 
-    const svg = d3.select(".chart").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+    // const svg = d3.select(".chart").append("svg")
+    //     .attr("width", "100%")
+    //     .attr("height", height);
 
-    const g = svg.append("g");
+    // const g = svg.append("g");
 
-    svg.call(d3.zoom().scaleExtent([1, 2]).on('zoom', () => {
-        g
-        .attr('transform', d3.event.transform);
-    }))
-    console.log("d3.json - " + d3.json);
+    // svg.call(d3.zoom().scaleExtent([1, 3]).on('zoom', () => {
+    //     g
+    //     .attr('transform', d3.event.transform);
+    // })
+    // )
+    // console.log("d3.json - " + d3.json);
 
-    var canadaprov = d3.json("./canadaprovjson/canadaprov.json");
+    // var canadaprov = d3.json("./canadaprovjson/canadaprov.json");
+    const g = mapGrp.append("g").attr("class", "data-points");
+
 
     Promise.all([
-        d3.json("./canadaprovjson/canadaprovtopo.json"),
         d3.csv("./syslog-fault.csv"),
         d3.csv("./office-info.csv"),
         d3.csv("./devices.csv"),
         d3.csv("./links.csv"),
     ]).then(
-        ([canada, faultCsvIn, officeCsv, devicesCsvIn, linksCsvIn]) => {
+        ([faultCsvIn, officeCsv, devicesCsvIn, linksCsvIn]) => {
 
             // Filter records for duration we are interested in
             var faultCsv = filter_by_time(faultCsvIn, time_of_view, time_window);
             var devicesCsv = filter_by_time(devicesCsvIn, time_of_view, time_window);
             var linksCsv = filter_by_time(linksCsvIn, time_of_view, time_window);
-            console.log("canadadata - " + canada);
-            console.log("faultCsv - " + faultCsv);
-            console.log("officeCsv - " + officeCsv);
-            console.log("devices - " + devicesCsv);
-            console.log("links - " + linksCsv);
-
-            // 1.0 - Setup the maps
-            var projection = d3.geoConicConformal()
-                .rotate([91, 0])
-                .center([0, 63])
-                .parallels([49, 77])
-                .scale(1000)
-                .translate([width / 2, height / 2])
-                .precision(.1);
-
-            var path = d3.geoPath(projection);
-            var transform = topojson.transform(canada);
-
-            g.append("path")
-                .datum(topojson.mesh(canada))
-                .attr("d", path);
-
-            g.selectAll("circle")
-                .data(canada.arcs)
-                .enter().append("circle")
-                .attr("transform", function (d) {
-                    // console.log("d[0] - " + d[0]);
-                    return "translate(" + transform(d[0]) + ")";
-                })
-                .attr("r", 0.25);
+            // console.log("faultCsv - " + faultCsv);
+            // console.log("officeCsv - " + officeCsv);
+            // console.log("devices - " + devicesCsv);
+            // console.log("links - " + linksCsv);
 
             var devices = {};
             devicesCsv.forEach(d => {
@@ -115,8 +148,6 @@ function createMap(time_of_view_str) {
                 }
                 offices[d.name] = office;
             })
-
-            console.log(faultCount);
 
             // Add all offices on the map. If no faults, show them as green. If fauls present, show them as
             // amber with size of circle based on number of faults.
@@ -181,7 +212,6 @@ function createMap(time_of_view_str) {
                 .enter()
                 .append("line")
                 .attr("x1", function (d) {
-                    console.log("device a = " + d.device_a);
                     var device = devices[d.device_a];
                     var office = offices[device.location];
                     var coords = projection([office.long, office.lat]);
@@ -214,52 +244,7 @@ function createMap(time_of_view_str) {
                     .text(function(d) { return d.link_name;});  
         }
     )
-
-
-    //     svg.append("path")
-    //         .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-    //         .attr("fill", "none")
-    //         .attr("stroke", "white")
-    //         .attr("stroke-linejoin", "round")
-    //         .attr("d", path);
-
-    //     const legend = svg.append("g")
-    //         .attr("fill", "#777")
-    //         .attr("transform", "translate(915,608)")
-    //         .attr("text-anchor", "middle")
-    //         .style("font", "10px sans-serif")
-    //       .selectAll("g")
-    //         .data(radius.ticks(4).slice(1))
-    //       .join("g");
-
-    //     legend.append("circle")
-    //         .attr("fill", "none")
-    //         .attr("stroke", "#ccc")
-    //         .attr("cy", d => -radius(d))
-    //         .attr("r", radius);
-
-    //     legend.append("text")
-    //         .attr("y", d => -2 * radius(d))
-    //         .attr("dy", "1.3em")
-    //         .text(radius.tickFormat(4, "s"));
-
-    //     svg.append("g")
-    //         .attr("fill", "brown")
-    //         .attr("fill-opacity", 0.5)
-    //         .attr("stroke", "#fff")
-    //         .attr("stroke-width", 0.5)
-    //       .selectAll("circle")
-    //       .data(data
-    //           .filter(d => d.position)
-    //           .sort((a, b) => d3.descending(a.value, b.value)))
-    //       .join("circle")
-    //         .attr("transform", d => `translate(${d.position})`)
-    //         .attr("r", d => radius(d.value))
-    //       .append("title")
-    //         .text(d => `${d.title}
-    //   ${format(d.value)}`);
-
-    return svg.node();
+    return mapSvg.node();
 };
 
 function createForcedGraphOfDevices(officeCsv, office) {
@@ -285,10 +270,7 @@ function filter_by_time(csvRecords, time, duration){
 
     return csvRecords.filter(function(el){
         var obs_time = Date.parse(el.time); 
-        console.log("comparing - " + time + " and " + obs_time);  
         if( obs_time <= time && obs_time > (time - (duration*1000))){
-        // if( obs_time <= time ){
-            console.log("element - " + JSON.stringify(el));
             return el;
         }
     })

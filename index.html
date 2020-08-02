@@ -1,43 +1,50 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="shortcut icon" href="#" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-    <script src="https://d3js.org/topojson.v2.min.js"></script>
-    <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
-    <link href="index.css" rel="stylesheet" type="text/css">
-    <script type="module" src="./index.js"></script>
-    <script type="module" src="./fault-timeline.js"></script>
-    <body onload='init()'>
-      <script>
-        function init(){
-          plotSyslog();
-        }
-      </script>
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="#" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="https://d3js.org/d3-zoom.v1.min.js"></script>
+  <script src="https://d3js.org/d3-drag.v1.min.js"></script>
+  <link href="index.css" rel="stylesheet" type="text/css">
+  <script type="module" src="./index.js"></script>
+  <script type="module" src="./fault-timeline.js"></script>
 
-<body>
-  <h2 class="header">Network View through Link Outage</h2>
-    <div class="timeline" > </div>
-    <div class="container">
+<body onload='init()'>
+  <script>
+    function init() {
+      plotSyslog(undefined);
+    }
+  </script>
+  </head>
+
+  <body>
+    <h2 class="header">Network View through Link Outage</h2>
+    <div class="timeline"> </div>
+    <nav class="navbar navbar-default">
+      <div class="container">
         <ul class="nav nav-tabs">
-          <li class="active" onclick="plotHeatMap('2020-07-20T09:00:00Z')"><a data-toggle="tab" href="#home">Before Outage (9:00 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:02:00Z')">Devices starts alarming (9:02 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:04:00Z')">Link is in outage (9:04 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotHeatMap('2020-07-20T09:06:00Z')">Outage resolved. (9:06 AM)</a></li>
+          <li class="active"><a data-toggle="tab" onclick="toggleIntro(true)">Introduction</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:00:00Z')">Before Outage (9:00 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:02:00Z')">Devices starts alarming (9:02 AM)</a>
+          </li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:04:00Z')">Link is in outage (9:04 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:06:00Z')">Outage resolved. (9:06 AM)</a></li>
           <li><a data-toggle="tab" href="#menu3">Explore</a></li>
         </ul>
       </div>
-      <div class="chart" >
-      </div>
+    </nav>
+    <div id="chart" class="chart">
+    </div>
 
-
- 
-</body>
+    <div id="intro" class="intro">
+      This project demonstration visualization of a network through time undergoing a Link outage.
+    </div>
+  </body>
 
 
 </html>
