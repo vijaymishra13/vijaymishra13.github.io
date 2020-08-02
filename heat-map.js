@@ -12,6 +12,7 @@ var chartScale = 1.5;
 var mapSvg = undefined;
 var mapGrp = undefined;
 var projection = undefined;
+var initial = true;
 
 function createMap() {
     console.log("Creating a Heat map - 11!");
@@ -56,6 +57,7 @@ function createMap() {
             mapGrp.append("path")
                 .datum(topojson.mesh(canada))
                 .attr("d", path);
+          //      .attr("transform", "translate(-144.437731225285,-407.0192715927378) scale(1.3122112545919633)");
         }
     )
     return mapSvg.node();
@@ -159,7 +161,7 @@ function plotDataPoints(time_of_view_str) {
                 .attr("r", function (d) {
                     var count = faultCount[d.name];
                     if (count || count > 0) {
-                        return count * 2;
+                        return count * 4;
                     } else {
                         return 5;
                     }
@@ -242,6 +244,12 @@ function plotDataPoints(time_of_view_str) {
                 .style("stroke-dasharray", ("3, 3")) 
                 .append("title")
                     .text(function(d) { return d.link_name;});  
+
+               if(initial){
+                    mapGrp.attr("transform", "translate(-144.437731225285,-407.0192715927378) scale(1.3122112545919633)");   
+                    initial = false;
+               }     
+               
         }
     )
     return mapSvg.node();

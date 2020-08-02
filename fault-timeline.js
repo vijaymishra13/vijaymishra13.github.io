@@ -1,6 +1,12 @@
 
-export function plotSyslog(current_time) {
+
+var axisX = undefined;
+var axisY = undefined;
+var g_explore = false
+
+export function plotSyslog(current_time, explore) {
     window.current_time = current_time;
+    g_explore = explore;
     if(axisX == undefined){
         createSyslogTimeline();
     }
@@ -9,11 +15,11 @@ export function plotSyslog(current_time) {
         plotHeatMap(current_time);
         toggleIntro(false);
     }
+
 };
 window.plotSyslog = plotSyslog;
 
-var axisX = undefined;
-var axisY = undefined;
+
 
 async function createSyslogTimeline() {
 
@@ -89,7 +95,11 @@ async function createSyslogTimeline() {
                     .on("start drag", function() {
                         let currentValue = d3.event.x;
                         console.log("Dragging going on = " + d3.event.x)
-                        update_slider(axisX.invert(currentValue)); 
+                        // Only in explore mode - update slider
+                        if(g_explore){
+                            update_slider(axisX.invert(currentValue)); 
+                        }
+  
                       }));
         
         });
@@ -110,24 +120,47 @@ function update_slider(slider_time){
 
     d3.select(".time_slider").remove();
 
-    d3.select("svg").append("g")
-        .attr("transform", "translate(50,20)")
-        .selectAll(".time_slider").data([slider_time])
-        .enter()
-        .append("rect")   
-        .attr("class", "time_slider")
-        .attr("x", function (d, i) { return (axisX(new Date(d)) - 14); })
-        .attr("y", function (d, i) { return (axisY(0) - 7); })
-        .attr("width", "30")
-        .attr("height", "14")
-        .attr("rx", "4")
-        .attr("ry", "4")
-        .attr("fill", "#E8E8E8")
-        .attr("opacity", "1")
-        .attr("stroke", "black")
-        .attr("stroke-width", "1")
-    .append("title")
-        .text(function(d) { return d;});
+    // Only in explore - provide slider. In non-explore mode, provide a pointer
+    if(g_explore){
+        d3.select("svg").append("g")
+            .attr("transform", "translate(50,20)")
+            .selectAll(".time_slider").data([slider_time])
+            .enter()
+            .append("rect")   
+            .attr("class", "time_slider time_slider_explore")
+            .attr("x", function (d, i) { return (axisX(new Date(d)) - 14); })
+            .attr("y", function (d, i) { return (axisY(0) - 7); })
+            .attr("width", "30")
+            .attr("height", "14")
+            .attr("rx", "4")
+            .attr("ry", "4")
+            .attr("fill", "#E8E8E8")
+            .attr("opacity", "1")
+            .attr("stroke", "black")
+            .attr("stroke-width", "1")
+        .append("title")
+            .text(function(d) { return d;});
+    }else{
+        d3.select("svg").append("g")
+            .attr("transform", "translate(50,20)")
+            .selectAll(".time_slider").data([slider_time])
+            .enter()
+            .append("rect")   
+            .attr("class", "time_slider")
+            .attr("x", function (d, i) { return (axisX(new Date(d)) - 14); })
+            .attr("y", function (d, i) { return (axisY(0) - 7); })
+            .attr("width", "14")
+            .attr("height", "14")
+            .attr("rx", "4")
+            .attr("ry", "4")
+            .attr("fill", "#E8E8E8")
+            .attr("opacity", "1")
+            .attr("stroke", "black")
+            .attr("stroke-width", "1")
+        .append("title")
+            .text(function(d) { return d;});
+    }
+
 
     plotHeatMap(slider_time);    
 
