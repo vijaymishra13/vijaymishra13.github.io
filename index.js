@@ -1,7 +1,7 @@
 import { plotSyslog } from './fault-timeline.js';
 import { plotHeatMap } from './heat-map.js';
 
-window.chart_width = 1300;
+window.chart_width = 1000;
 window.chart_scale = 1.5;
 window.current_time = '2020-07-20T09:00:00Z';
 

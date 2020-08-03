@@ -269,7 +269,7 @@ function plotDataPoints(time_of_view_str) {
                if(initial){
                     mapGrp.attr("transform", "translate(-144.437731225285,-407.0192715927378) scale(1.3122112545919633)");   
                     initial = false;
-               }     
+               }    
                
         }
     )

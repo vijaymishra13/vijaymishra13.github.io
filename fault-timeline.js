@@ -2,7 +2,7 @@
 
 var axisX = undefined;
 var axisY = undefined;
-var g_explore = false
+window.g_explore = false
 
 export function plotSyslog(current_time, explore) {
     window.current_time = current_time;
@@ -29,28 +29,54 @@ async function createSyslogTimeline() {
     ]).then(
         ([data, changesCsv]) => {
             console.log(data);
-            axisX = d3.scaleTime().domain([new Date("2020-07-20T09:00:00Z"), new Date("2020-07-20T09:10:00Z")])
+            axisX = d3.scaleTime().domain([new Date("2020-07-20T09:00:00"), new Date("2020-07-20T09:10:00")])
                 .range([0, chart_width]);
-        
             axisX.clamp(true);
         
             axisY = d3.scaleLinear().domain([0,1])
                 .range([50, 25]);
         
-        
-            // currently just plotting single error at one time instant
-            d3.select(".timeline").append("svg")
+            const svg =  d3.select(".timeline").append("svg")
                     .attr("width", "100%")
-                    .attr("height", "100px")
-                .append("g").attr("transform", "translate(50,0)")
-                .selectAll("circle").data(data).enter()
-                .append("circle")
-                    .attr("cx", function (d, i) { return axisX(new Date(d.time)); })
-                    .attr("cy", function (d, i) { return axisY(1); })
-                    .attr("r", function (d, i) { return 5; })
-                .append("title")
-                    .text(function(d) { return d.source + " - " + d.description;});
+                    .attr("height", "100px");
+
+            // currently just plotting single error at one time instant
+            svg.append("g")
+                .attr("transform", "translate(50,24)").append("line")
+                .attr("x1", axisX.range()[0])
+                .attr("x2", axisX.range()[1])
+                .attr("stroke", "#C0C0C0")
+                .attr("stroke-width", 1)
+                .style("stroke-dasharray", ("3, 3"));   
+
+            svg.append("g").attr("transform", "translate(50,0)")
+            .selectAll("circle").data(data).enter()
+            .append("circle")
+                .attr("cx", function (d, i) { return axisX(new Date(d.time)); })
+                .attr("cy", function (d, i) { return axisY(1); })
+                .attr("r", function (d, i) { return 6; })
+            .append("title")
+                .text(function(d) { return d.source + " - " + d.description;});
         
+            svg.append("g")
+                .attr("transform", "translate(5,28)").append("text")
+                .text("Faults")
+                .attr("font-size", "11px");  
+                
+            svg.append("g")
+                .attr("transform", "translate(50,43)").append("line")
+                .attr("x1", axisX.range()[0])
+                .attr("x2", axisX.range()[1])
+                .attr("stroke", "#C0C0C0")
+                .attr("stroke-width", 1)
+                .style("stroke-dasharray", ("3, 3"));   
+
+            d3.select("svg").append("g")
+                .attr("transform", "translate(5,46)").append("text")
+                .text("Changes")
+                .attr("font-size", "11px");      
+                
+
             // let bottomAxis = d3.axisBottom(axisX).tickValues([new Date("2020-07-20T09:00:00Z"), new Date("2020-07-20T09:10:00Z")]);
             let bottomAxis = d3.axisBottom(axisX).ticks(10);
             // let leftAxis = d3.axisLeft(axisY).tickValues(["TOROONA1C01", "OTWAONA1C01"]);
@@ -101,6 +127,8 @@ async function createSyslogTimeline() {
                         }
   
                       }));
+
+
         
         });
     // const data = await d3.csv("./syslog-fault.csv");
@@ -160,8 +188,7 @@ function update_slider(slider_time){
         .append("title")
             .text(function(d) { return d;});
     }
-
-
+ 
     plotHeatMap(slider_time);    
 
 }

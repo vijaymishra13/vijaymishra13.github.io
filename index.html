@@ -23,19 +23,19 @@
   </head>
 
   <body>
-    <h2 class="header">Network View through Link Outage</h2>
+    <h2 class="header">Network Visualization showing an Outage</h2>
     <div class="timeline"> </div>
     <nav class="navbar navbar-default">
       <div class="container">
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" onclick="toggleIntro(true)">Introduction</a></li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:00:00Z')">Before Outage (9:00 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:02:00Z')">Devices starts alarming (9:02 AM)</a>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:00:00')">Before Outage (9:00 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:02:00')">Devices alarm (9:02 AM)</a>
           </li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:04:00Z')">Link is in outage (9:04 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:08:00Z')">Devices resolved. (9:08 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:10:00Z')">Outage resolved. (9:10 AM)</a></li>
-          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:10:00Z', true)">Explore</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:04:00')">Link in outage (9:04 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:08:00')">Devices resolved (9:08 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:10:00')">Outage resolved (9:10 AM)</a></li>
+          <li><a data-toggle="tab" onclick="plotSyslog('2020-07-20T09:10:00', true)">Explore (Click on timeline)</a></li>
         </ul>
       </div>
     </nav>
@@ -43,7 +43,17 @@
     </div>
 
     <div id="intro" class="intro">
-      This project demonstration visualization of a network through time undergoing a Link outage.
+      <br>
+      In this Narrative visualization, a hypothetical network link outage is demonstrated along with its resolution. Because of unavailability of appropriate data in public domain, data in this project is mocked to represent a fictional network having an outage. 
+      <br>
+      <br>
+      Martini glass narrative structure is used for this project to walk user through network view over a time period as various elements of the network starts alarming, one of the network link goes down and eventually all issues are resolved. A chart plotted on time scale shows overview of various faults reported in the network along with remedial actions performed on the network. Second chart shows the network view plotted on geographic map showing status of various devices as well as link connecting them. A set of tabs were used to navigate through snapshot view of network at different moment in time annotated with high level status of network. Last tab allows user to explore status of network using slider on the timeline. User can also zoom in and out the map, though no additional information is made available on zoom-in. In future, project can be enhanced to display different offices in a city. 
+      <br>
+      <br>
+      A timeline on top of the page is used to keep user oriented on timeline. For the network view, a familiar geographic map is used as the scene showing various network elements based on their geographic location. As the user navigates through various tabs, backdrop of geographic map stays same while different elements are updated based on their status. A marker on overview timeline is also updated to show their relative position on the timeline of events. Color of the elements is used to highlight devices and links that require attention. The timeline on the top with a marker indicates to the user that what they are viewing is a snapshot of network at a given time.
+      <br>
+      <br>
+      <br>  
     </div>
   </body>
 

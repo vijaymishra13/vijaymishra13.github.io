@@ -1,11 +1,11 @@
 ﻿source,description,time
-TOROONA1,Toronto is all green now. No issues reported.,2020-07-20T09:00:00Z
-TOROONA1,Toronto devices are alarming now. It's turning red.,2020-07-20T09:02:00Z
-TOROONA1,Toronto is all red. One link is reporting outage too.,2020-07-20T09:04:00Z
-TOROONA1,Toronto is all red. One link is reporting outage too.,2020-07-20T09:06:00Z
-TOROONA1,Toronto devices are all green now. Link to Calgary is still in outage.,2020-07-20T09:08:00Z
-TOROONA1,Toronto is all green now. All issues cleared.,2020-07-20T09:09:00Z
-CALGABA1,Calgary is all red as well now. Link to Toronto is in outage.,2020-07-20T09:04:00Z
-CALGABA1,Calgary is all red. Link to Toronto is in outage.,2020-07-20T09:06:00Z
-CALGABA1,Calgary is green now. Link to Toronto is still in outage.,2020-07-20T09:08:00Z
-CALGABA1,Calgary is green now. All issues cleared.,2020-07-20T09:10:00Z
+TORONTO01,Toronto is all green now. No issues reported.,2020-07-20T09:00:00
+TORONTO01,Toronto devices are alarming now. It's turning red.,2020-07-20T09:02:00
+TORONTO01,Toronto is all red. One link is reporting outage too.,2020-07-20T09:04:00
+TORONTO01,Toronto is all red. One link is reporting outage too.,2020-07-20T09:06:00
+TORONTO01,Toronto devices are all green now. Link to Calgary is still in outage.,2020-07-20T09:08:00
+TORONTO01,Toronto is all green now. All issues cleared.,2020-07-20T09:09:00
+CALGARY01,Calgary is all red as well now. Link to Toronto is in outage.,2020-07-20T09:04:00
+CALGARY01,Calgary is all red. Link to Toronto is in outage.,2020-07-20T09:06:00
+CALGARY01,Calgary is green now. Link to Toronto is still in outage.,2020-07-20T09:08:00
+CALGARY01,Calgary is green now. All issues cleared.,2020-07-20T09:10:00
