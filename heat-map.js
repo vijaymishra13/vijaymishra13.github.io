@@ -105,13 +105,15 @@ function plotDataPoints(time_of_view_str) {
         d3.csv("./office-info.csv"),
         d3.csv("./devices.csv"),
         d3.csv("./links.csv"),
+        d3.csv("./annotations.csv"),
     ]).then(
-        ([faultCsvIn, officeCsv, devicesCsvIn, linksCsvIn]) => {
+        ([faultCsvIn, officeCsv, devicesCsvIn, linksCsvIn, annotationsCsvIn]) => {
 
             // Filter records for duration we are interested in
             var faultCsv = filter_by_time(faultCsvIn, time_of_view, time_window);
             var devicesCsv = filter_by_time(devicesCsvIn, time_of_view, time_window);
             var linksCsv = filter_by_time(linksCsvIn, time_of_view, time_window);
+            var annotationsCsv = filter_by_time(annotationsCsvIn, time_of_view, time_window);
             // console.log("faultCsv - " + faultCsv);
             // console.log("officeCsv - " + officeCsv);
             // console.log("devices - " + devicesCsv);
@@ -244,6 +246,25 @@ function plotDataPoints(time_of_view_str) {
                 .style("stroke-dasharray", ("3, 3")) 
                 .append("title")
                     .text(function(d) { return d.link_name;});  
+
+                // Add annotations to the chart
+                const annotations = g.selectAll("notes")
+                    .data(annotationsCsv)
+                    .enter()
+                    .append("text")
+                    .attr("x", function (d) {
+                        var office = offices[d.source];
+                        var coords = projection([office.long, office.lat]);
+                        return coords[0] - 30;
+                    })
+                    .attr("y", function (d) {
+                        var office = offices[d.source];
+                        var coords = projection([office.long, office.lat]);
+                        return coords[1] + 35;
+                    })
+                    .style("fill", "#000080")
+                    .attr("font-size", "12px")
+                    .text( function (d) { return d.description; });
 
                if(initial){
                     mapGrp.attr("transform", "translate(-144.437731225285,-407.0192715927378) scale(1.3122112545919633)");   
